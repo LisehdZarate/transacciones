@@ -7,7 +7,7 @@ class empresa(models.Model):
     ciudad_Empresa=models.CharField(max_length=30)
     direccion_Empresa=models.CharField(max_length=50)
     def __str__(self):
-        return self.nitempresa,self.nombreEmpresa,self.ciudadEmpresa,self.direccionEmpresa
+        return self.nit_empresa,self.nombre_Empresa,self.ciudad_Empresa,self.direccion_Empresa
 
 class rol(models.Model):
     rol_id=models.IntegerField(primary_key=True)
