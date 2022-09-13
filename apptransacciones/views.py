@@ -111,14 +111,14 @@ class usuarioVista(View):
     def put(self,request,doc):
       datos=json.loads(request.body)
       usu=list(usuario.objects.filter(usuario_id=doc).values())
-      if len(usu)>0:
+      if len(usu)>0: 
          usuario1=usuario.objects.get(usuario_id=doc)
          usuario1.nombre_Usu=datos["nombre_Usu"]
          usuario1.apellido_Usu=datos["apellido_Usu"]
          usuario1.correoUsu=datos["correoUsu"]
          usuario1.login=datos["login"]
          usuario1.password_Usu=datos["password_Usu"]
-         usuario1.fk_rol=rol.objects.get(rol_id = datos["fk_rol"])
+         usuario1.fk_rol=rol.objects.get(rol_id = datos["fk_rol_id"])
          usuario1.save()
          mensaje={"Respuesta":"Datos actualizados"}
       else:
@@ -159,11 +159,22 @@ class movimientofinancieroVista(View):
     def put(self,request,doc):
         datos=json.loads(request.body)
         mov=list(movimientofinanciero.objects.filter(movimiento_id=doc).values())
+        searchUser = list(usuario.objects.filter(usuario_id = datos["fk_usuario"]).values())
+        if len(searchUser)==0:
+            mensaje={"Respuesta":"Usuario no encontrado"}
+            return JsonResponse(mensaje)
+
+        searchUser = list(empresa.objects.filter(nit_empresa = datos["fk_empresa"]).values())
+        if len(searchUser)==0:
+            mensaje={"Respuesta":"Empresa no encontrada"}
+            return JsonResponse(mensaje)
+
+
         if len(mov)>0:
             movfinanciero=movimientofinanciero.objects.get(movimiento_id=doc)
             movfinanciero.fecha=datos["fecha"]
-            movfinanciero.fk_usuario=usuario.objects.filter(fk_usuario_name = datos["fk_usuario"])
-            movfinanciero.fk_empresa=empresa.objects.filter(blogfk_empresa_name = datos["fk_empresa"])
+            movfinanciero.fk_usuario = usuario.objects.get(usuario_id = datos["fk_usuario"])
+            movfinanciero.fk_empresa=empresa.objects.get(nit_empresa = datos["fk_empresa"])
             movfinanciero.descripcion_movimiento=datos["descripcion_movimiento"]
             movfinanciero.tipo_movimiento=datos["tipo_movimiento"]
             movfinanciero.saldo=datos["saldo"]
