@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  {% load static%}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Empresas</title>
+  {% if request.session.login %}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+   <div style="text-align: center"><h1>Empresas</h1></div>
+      <table class="table table-striped table-hover">
+        <thead class="table-dark">
+
+            
+          <tr>
+            <th>Nit Empresa</th>
+            <th>Nombre Empresa</th>
+            <th>Ciudad Empresa</th>
+            <th>Direccion Empresa</th>
+            <th colspan="2">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%for i in listadoEmpresa%}
+          <tr>
+            <td>{{i.nit_empresa}}</td>
+            <td>{{i.nombre_Empresa}}</td>
+            <td>{{i.ciudad_Empresa}}</td>
+            <td>{{i.direccion_Empresa}}</td>
+            <td><a href="/empresa/{{i.nit_empresa}}">Actualizar</a></td>
+            <td><a href="/eliminarempresa/{{i.nit_empresa}}">Eliminar</a></td>
+          </tr>
+          {%endfor%}
+    </div>
+  </div>
+  </tbody>
+  </table>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+    crossorigin="anonymous"></script>
+</body>
+{%endif%}
+</html>

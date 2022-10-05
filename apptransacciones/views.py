@@ -3,6 +3,8 @@ from http.client import HTTPResponse
 import imp
 import json
 from email import message
+from re import template
+from django.contrib import messages
 from django.shortcuts import render
 from django.views import View
 from .models import empresa, movimientofinanciero, cargo, usuario, empresaUsuario
@@ -10,7 +12,7 @@ from django.http.response import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
-
+from django.shortcuts import redirect
 
 
 class empresaVista(View):
@@ -20,17 +22,33 @@ class empresaVista(View):
 
     
     
-    def get(self, request): 
-        emp=list(empresa.objects.values())
-        datos={'listadoEmpresa': emp}
-        return JsonResponse (datos)
+    def get(self, request, empId=0): 
+        if empId>0:
+            empresas=list(empresa.objects.filter(nit_empresa=empId).values())
+            print(empresas)
+            if len(empresas)>0:
+                getEmp=empresas[0]
+                template_name='actualizaremp.html'
+                datos={'empresa': getEmp}
+                return render(request,template_name,datos)
+            else:    
+             datos={"respuesta":"Dato no se encontro"}
+             print("ENCONTRADO")
+             return render(request,template_name,datos)     
+        else:
+           template_name='consultarempresa.html'
+           emp=empresa.objects.all()
+           datos={'listadoEmpresa': emp}
+           return render(request,template_name,datos)
 
     def post (self, request):
-        datos=json.loads(request.body)
-        empresa.objects.create(nit_empresa=datos["nit_empresa"]
-        , nombre_Empresa=datos["nombre_Empresa"], ciudad_Empresa=datos["ciudad_Empresa"]
-        , direccion_Empresa=datos["direccion_Empresa"])
-        return JsonResponse(datos)
+        datos=(request.POST)
+        empresa.objects.create(
+            nit_empresa=datos["nit_empresa"],
+            nombre_Empresa=datos["nombre_Empresa"], 
+            ciudad_Empresa=datos["ciudad_Empresa"],
+            direccion_Empresa=datos["direccion_Empresa"])
+        return redirect('/empresa/')
 
     def put(self,request,doc):
       datos=json.loads(request.body)
@@ -101,22 +119,40 @@ class usuarioVista(View):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,*args, **kwargs)
    
-    def get(self, request): 
-        usu=list(usuario.objects.values())
-        datos={'listadoUsuario': usu}
-        return JsonResponse (datos)
+     
+    def get(self, request, usuId=0):
+        if usuId>0:
+            usuario1=list(usuario.objects.filter(usuarioId=usuId).values())
+            print(usuario1)
+            if len(usuario1)>0:
+                getUsu=usuario1[0]
+                template_name='actualizarusu.html'
+                datos={'usuario': getUsu}
+                return render(request,template_name,datos)
+            else:
+             datos={"respuesta":"Dato no se encontro"}
+             print("ENCONTRADO")
+             return render(request,template_name,datos)     
+        else:
+          template_name='consultarusuario.html'
+          usu=usuario.objects.all()
+          datos={'listadoUsuario': usu}
+          return render(request,template_name,datos)
+
 
     def post (self, request):
-        datos=json.loads(request.body)
-        cargos=cargo.objects.get(cargoId = datos["cargoId"])
-        usuario.objects.create(usuarioId=datos["usuarioId"]
-           , nombre_Usu=datos["nombre_Usu"]
-           , apellido_Usu=datos["apellido_Usu"]
-           , correoUsu=datos["correoUsu"]
-           , login=datos["login"]
-           , password_Usu=datos["password_Usu"]
-           , cargoId=cargos)
-        return JsonResponse(datos)
+        datos=(request.POST)
+        cargos=cargo.objects.get(cargoId = datos["Cargo"])
+        
+        usuario.objects.create(
+            usuarioId=datos["usuarioId"]
+            , nombre_Usu=datos["nombre_Usu"]
+            , apellido_Usu=datos["apellido_Usu"]
+            , correoUsu=datos["correoUsu"]
+            , login=datos["login"]
+            , password_Usu=datos["password_Usu"]
+            , cargoId=cargos)
+        return redirect('/usuario/')
       
 
     def put(self,request,doc):
@@ -144,6 +180,54 @@ class usuarioVista(View):
         else:   
                mensaje={"Respuesta":"Registro no encontrado"}
         return JsonResponse (mensaje) 
+  
+
+
+class login(View):
+    def loginusuario(request):
+        if request.method=='POST':
+            try:
+                detalleusuario=usuario.objects.get(login=request.POST['login'],password_Usu=request.POST['password_Usu'])                 
+                cargos=cargo.objects.get(cargoId=detalleusuario.cargoId_id)
+                
+
+                if cargos.isAdministrator=="1":
+                    request.session['login']=detalleusuario.login
+                    return render(request,'gestionc.html')
+                elif cargos.isAdministrator=="0":
+                    request.session['login']=detalleusuario.login
+                    return render(request,'empleado.html')
+            except usuario.DoesNotExist as e:
+                messages.success(request,('No existe el dato'))
+        return render(request,'login.html')
+    
+    def formularioregistro(request):
+        return render(request,'registromovimiento.html')
+
+    def formularioactualizar(request,movimientoId):
+        mov=movimientofinanciero.objects.get(movimientoId=movimientoId)
+        datos={
+            'movimientofinanciero':mov
+        }
+        return render(request,'actualizarmov.html',datos)
+    
+    def actualizar(request):
+        movid=request.POST["movimientoId"]
+        fch=request.POST["fecha"]
+        usu=usuario.objects.get(usuarioId = request.POST["usuarioId"])
+        emp=empresa.objects.get(nit_empresa = request.POST["nit_empresa"])
+        des=request.POST["descripcion_movimiento"]
+        tip=request.POST["tipo_movimiento"]
+        sal=request.POST["saldo"]
+        mov=movimientofinanciero.objects.get(movimientoId=movid)
+        mov.fecha=fch
+        mov.usuarioId=usu
+        mov.nit_empresa=emp
+        mov.descripcion_movimiento=des
+        mov.tipo_movimiento=tip
+        mov.saldo=sal
+        mov.save()
+        return redirect("movimientofinanciero")
 
 
 class empresaUsuarioVista(View):
@@ -196,24 +280,44 @@ class movimientofinancieroVista(View):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request,*args, **kwargs)
    
-    def get(self, request): 
-        mov=list(movimientofinanciero.objects.values())
-        datos={'listadoMovimiento': mov}
-        return JsonResponse (datos)
+    def get(self, request, movId=0):
+        if movId>0:
+            movimiento=list(movimientofinanciero.objects.filter(movimientoId=movId).values())
+            print(movimiento)
+            if len(movimiento)>0:
+                getMovimiento=movimiento[0]
+                template_name='actualizarmov.html'
+                datos={'movimientofinanciero': getMovimiento}
+                return render(request,template_name,datos)
+            else:
+             datos={"respuesta":"Dato no se encontro"}
+             print("ENCONTRADO")
+             return render(request,template_name,datos)     
+        else:
+          template_name='consultarmovimiento.html'
+          mov=movimientofinanciero.objects.all()
+          datos={'listadoMovimiento': mov}
+          return render(request,template_name,datos)
+
+   
+
+
 
     def post (self, request):
-        datos=json.loads(request.body)
-        usu=usuario.objects.get(usuarioId = datos["cargoId"])
+        datos=(request.POST)
+        
+        usu=usuario.objects.get(usuarioId = datos["usuarioId"])
         emp=empresa.objects.get(nit_empresa = datos["nit_empresa"])
         movimientofinanciero.objects.create(
-            movimientoId=datos["movimientoId"]
-            ,fecha=datos["fecha"]
-            ,cargoId=usu
+            movimientoId=datos["movimientoId1"]
+            ,fecha=datos["fecha1"]
+            ,usuarioId=usu
             ,nit_empresa=emp
-            ,descripcion_movimiento=datos["descripcion_movimiento"]
-            ,tipo_movimiento=datos["tipo_movimiento"]
-            ,saldo=datos["saldo"])
-        return JsonResponse(datos)
+            ,descripcion_movimiento=datos["descripcion_movimiento1"]
+            ,tipo_movimiento=datos["tipo_movimiento1"]
+            ,saldo=datos["saldo1"])
+        return redirect('/movimientofinanciero/')
+
 
     def put(self,request,doc):
         datos=json.loads(request.body)
@@ -252,3 +356,100 @@ class movimientofinancieroVista(View):
                 mensaje={"Respuesta":"Registro no encontrado"}
             return JsonResponse (mensaje) 
 
+def editarmovimiento(request):
+   if request.method=='POST':
+      movid=request.POST['movimientoId1']
+      fecha =request.POST['fecha1']
+      usu=request.POST['usuarioId1']
+      nit=request.POST['nit_empresa1']
+      des=request.POST['descripcion_movimiento1']
+      tip=request.POST['tipo_movimiento1']
+      sal=request.POST['saldo1']
+      #print(nom)
+      mov=movimientofinanciero.objects.get(movimientoId=movid)
+      usuario1=usuario.objects.get(usuarioId=usu)
+      emp=empresa.objects.get(nit_empresa=nit)
+      
+
+      mov.fecha=fecha
+      mov.usuarioId=usuario1
+      mov.nit_empresa=emp
+      mov.descripcion_movimiento=des
+      mov.tipo_movimiento=tip
+      mov.saldo=sal
+      mov.save()
+      return redirect('/movimientofinanciero/')
+
+def editarusuario(request):
+        if request.method=='POST':
+            usuid=request.POST['usuarioId']
+            nom =request.POST['nombre_Usu']
+            ape =request.POST['apellido_Usu']
+            cor=request.POST['correoUsu']
+            log=request.POST['login']
+            pas=request.POST['password_Usu']
+            car=request.POST['cargoId']
+            #print(nom)
+            usu=usuario.objects.get(usuarioId=usuid)
+            cargoId1=cargo.objects.get(cargoId=car)  
+
+            usu.nombre_Usu=nom
+            usu.apellido_Usu=ape
+            usu.correoUsu=cor
+            usu.login=log
+            usu.password_Usu=pas
+            usu.cargoId=cargoId1
+            usu.save()
+            return redirect('/usuario/')
+
+def editarempresa(request):
+   if request.method=='POST':
+      empid=request.POST['nit_empresa']
+      nombre_Empresa=request.POST['nombre_Empresa']
+      ciudad_Empresa=request.POST['ciudad_Empresa']
+      direccion_Empresa=request.POST['direccion_Empresa']
+      emp=empresa.objects.get(nit_empresa=empid)
+    
+      emp.nombre_Empresa=nombre_Empresa
+      emp.ciudad_Empresa=ciudad_Empresa
+      emp.direccion_Empresa=direccion_Empresa
+      emp.save()
+      return redirect('/empresa/')
+
+def gestionusuario(request):
+           return render(request,"actualizarusu.html")
+
+def formulariousu(request):
+        allCargo=usuario.objects.all()
+        datos={'listadocargo': allCargo}
+        return render(request,"registrousuario.html",datos)
+
+def formularioemp(request):
+        allempresa=empresa.objects.all()
+        datos={'listadoEmp': allempresa}
+        return render(request,"registroEmpresa.html",datos)
+
+def gestionusuario(request):
+   return render(request,"gestionc.html")
+
+def frminsertar(request):
+    allCargo=usuario.objects.all()
+    print("Hola Thor: ",allCargo)
+    datos={'listadocargo': allCargo}
+    return render(request,"registrousuario.html",datos)   
+
+          
+def eliminarMov(request,movId):
+    movimiento=list(movimientofinanciero.objects.filter(movimientoId=movId).values())
+    movimientofinanciero.objects.filter(movimientoId=movId).delete()
+    return redirect('/movimientofinanciero/')
+
+def eliminarUsu(request,usuId):
+    usuarios=list(usuario.objects.filter(usuarioId=usuId).values())
+    usuario.objects.filter(usuarioId=usuId).delete()
+    return redirect('/usuario/')         
+
+def eliminarEmp(request,empId):
+    #empresas=list(empresa.objects.filter(nit_empresa=empId).values())
+    empresa.objects.filter(nit_empresa=empId).delete()
+    return redirect('/empresa/')     

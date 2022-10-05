@@ -1,0 +1,68 @@
+body{
+    background:url(https://wallpaperboat.com/wp-content/uploads/2020/10/23/57974/real-estate-07.jpg);
+    background-size: cover;
+    height: 300px;
+    width: 100%;
+    background-repeat: no-repeat;
+}
+
+
+table{
+    background-color: rgb(245, 242, 242,0.60);
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+    border-collapse: collapse;
+    border-radius: 10px;
+}
+
+.uno{
+    background-color:#1f456e90;
+    font-style: italic; 
+    border-radius: 10px;
+    color: white;
+    align-content: center;
+
+}
+
+
+.cero{
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 0px;
+    font-family: sans-serif;
+    text-align: center;
+    line-height: 1;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 85px 30px;
+}
+
+th{
+    background-color: #59788e;
+    border-bottom: solid 5px #1f456e;
+    color: white;
+    hyphens: auto;
+    word-wrap: break-word;
+    word-break: break-word;
+    font-family:sans-serif;
+    height: 30px;
+    padding: 13px;
+}
+
+td{
+    padding: 5px;
+}
+
+thead{
+    background-color: #3d348a;
+    border-bottom: solid 5px #1e2164;
+    color: white;
+}
+
+tr:nth-child(even){
+    background-color: rgba(221, 221, 221, 0.636);
+}
+
+tr:hover{
+    background-color: rgb(250, 246, 246);
+}

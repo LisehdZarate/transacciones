@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  {% load static%}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Registro Empresas</title>
+  {% if request.session.login %}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+
+      <div style="text-align: center">
+        <h1>Registro Empresas</h1>
+      </div>
+
+      <form class="form-horizontal" action="/empresa/" method="POST">
+        {%csrf_token %}
+        <fieldset>
+
+          <!-- Form Name -->
+          <legend></legend>
+
+          <!-- Text input-->
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="textinput">Nit Empresa</label>
+            <div class="col-md-4">
+              <input id="nit_empresa" name="nit_empresa" type="number" placeholder="Nit Empresa"
+                class="form-control input-md " required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="textinput">Nombre Empresa</label>
+            <div class="col-md-4">
+              <input id="nombre_Empresa" name="nombre_Empresa" type="text" placeholder="Nombre Empresa"
+                class="form-control input-md " required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="textinput">Ciudad Empresa</label>
+            <div class="col-md-4">
+              <input id="ciudad_Empresa" name="ciudad_Empresa" type="text" placeholder="Ciudad Empresa"
+                class="form-control input-md " required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="textinput">Direccion Empresa</label>
+            <div class="col-md-4">
+              <input id="direccion_Empresa" name="direccion_Empresa" type="text" placeholder="Direccion Empresa"
+                class="form-control input-md " required>
+            </div>
+          </div>
+
+   
+
+
+          <!-- Button -->
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="singlebutton"></label>
+            <div class="col-md-4">
+              <button type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary">Registrar</button>
+            </div>
+          </div>
+
+        </fieldset>
+      </form>
+
+    </div>
+  </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+    crossorigin="anonymous"></script>
+</body>
+{%endif%}
+</html>

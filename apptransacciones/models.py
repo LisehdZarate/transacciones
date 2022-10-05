@@ -19,7 +19,7 @@ class cargo(models.Model):
     descripcionCargo=models.CharField(max_length=255)
     isAdministrator=models.CharField(max_length=15,choices=tipoRol, default='0')
     def __str__(self):
-        template = '{0.cargoId} {0.descripcionCargo}'
+        template = '{0.cargoId} {0.descripcionCargo} {0.isAdministrator}' 
         return template.format(self)  
 
 class usuario(models.Model):

@@ -1,0 +1,41 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+<link rel="stylesheet" href='{% static "css/login.css"%}' type="text/css">
+</head>
+<body>
+    <form action="" method="POST">
+        {%csrf_token %}
+        <div class="login-wrap">
+            <div class="login-html">
+                <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Login Usuario</label>
+                <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab"></label>
+                <div class="login-form">
+                    <div class="sign-in-htm">
+                        <div class="group">
+                            <label for="user" class="label">Usuario</label>
+                            <input id="user" name="login" type="text" class="input">
+                        </div>
+                        <div class="group">
+                            <label for="pass" class="label">Contraseña</label>
+                            <input id="pass" type="password" name="password_Usu" class="input" data-type="password">
+                        </div>
+                        <br><br>
+                        <div class="group">
+                            <input type="submit" class="button" value="Ingresar">
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+</body>
+</html>
+

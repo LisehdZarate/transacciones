@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  {% load static%}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Usuarios</title>
+  {% if request.session.login %}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+</head>
+
+  <body>
+    
+    <div class="container">
+      <div class="row">
+     <div style="text-align: center"><h1>Usuarios</h1></div>
+        <table class="table table-striped table-hover">
+          <thead class="table-dark">
+            <tr>  
+            <th>ID Usuario</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Correo</th>
+            <th>Login</th>
+            <th>Password</th>
+            <th>Cargo</th>
+            <th colspan="2">Acciones</th>
+            
+        </tr>
+
+
+      </thead>
+
+
+  <tbody>
+    
+    {%for i in listadoUsuario %}
+      <tr>
+        <td>{{ i.usuarioId }}</td>
+        <td>{{ i.nombre_Usu }}</td>
+        <td>{{ i.apellido_Usu }}</td>
+        <td>{{i.correoUsu}}</td>
+        <td>{{i.login}}</td>
+        <td>{{i.password_Usu}}</td>
+        <td>{{i.cargoId.descripcionCargo}}</td>
+        <td><a href="/usuario/{{i.usuarioId}}">Actualizar</a></td>
+        <td><a href="/eliminarusuario/{{i.usuarioId}}">Eliminar</a></td>
+      
+      </tr>
+      
+      {%endfor%}
+  </tbody>
+  </table>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+  crossorigin="anonymous"></script>
+</body>
+{%endif%}
+</html>

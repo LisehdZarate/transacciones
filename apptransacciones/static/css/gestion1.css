@@ -1,0 +1,42 @@
+body{
+  background:url(https://gruponewport.com/images/inmobiliaria_proyectos-inmobiliarios_bienes-inmuebles_canarias.jpg);
+  background-size: cover;
+  height: 100px;
+  width: 100%;
+  background-repeat: no-repeat;
+  justify-content: center;
+}
+
+.cero{
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 0px;
+  font-family: sans-serif;
+  text-align: center;
+  line-height: 1;
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 145px 30px;
+  width: 500px;
+
+}
+
+.uno{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+a{
+  margin-top: 30px;
+  width: 180px;
+  height: 30px;
+  background-color: rgb(1, 1, 34);
+  color: #fff;
+  float: right;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
