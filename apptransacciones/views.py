@@ -193,6 +193,7 @@ class login(View):
 
                 if cargos.isAdministrator=="1":
                     request.session['login']=detalleusuario.login
+                    request.session['usuarioId']=detalleusuario.usuarioId
                     return render(request,'gestionc.html')
                 elif cargos.isAdministrator=="0":
                     request.session['login']=detalleusuario.login
